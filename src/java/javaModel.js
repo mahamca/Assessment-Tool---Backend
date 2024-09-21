@@ -1,6 +1,12 @@
 import mongoose from "mongoose";
 
 const javaModel=mongoose.Schema({
+    userid:{
+        type:String,
+        required:true
+    
+    },
+
     name:{
         type:String,
         required:true

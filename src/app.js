@@ -2,11 +2,13 @@ import { config } from 'dotenv'
 import express, { json, urlencoded } from 'express'
 import { set,connect } from 'mongoose'
 import cors from 'cors'
-import registerRouter from './registration/registerRouter.js'
+
 import userRouter from './user/UserRouter.js'
 import subRouter from './quiz/subRouter.js'
 import javaRouter from './java/javaRouter.js'
 import scoreRouter from './score/scoreRouter.js'
+
+import sendMail from './sendMail.js'
 
 const app=express()
 
@@ -16,11 +18,12 @@ app.use(urlencoded({extended:true}))
 config()
 set('strictQuery',false)
 
-app.use('/register/',registerRouter)
+
 app.use('/user/',userRouter)
 app.use('/subject/', subRouter)
 app.use('/java/',javaRouter)
 app.use('/score/',scoreRouter)
+app.use('/sendmail/',sendMail)
 
 
 const port = process.env.PORT

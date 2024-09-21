@@ -1,6 +1,7 @@
 import express, { request,response } from 'express'
 import { Java, JavaQuestion } from './javaModel.js'
 
+
 const javaRouter = express.Router()
 
 javaRouter.post('/add/',async(request,response)=>{
@@ -41,6 +42,7 @@ javaRouter.post('/base/',async(request,response)=>{
 })
 
 javaRouter.get('/all/',async(request,response)=>{
+   
    const data=await Java.find({})
       response.json(data)
    
@@ -58,6 +60,49 @@ javaRouter.get('/:id/', async(request,response)=>{
   
 response.json(single_data)
     })
+
+    javaRouter.patch('/:id/',async(request,response)=>{
+      const {id}=request.params
+      const name_details = request.body[0]
+   const quest_details = request.body[1]
+   await Java.findByIdAndUpdate(id,name_details)
+   for(let quest_data of quest_details)
+   {
+      if(quest_data.new===true)
+      {
+         const new_questData=new JavaQuestion({
+            ansName:quest_data.ansName,
+            level:level,
+            question:question,
+            option1:option1,
+            option2:option2,
+            option3:option3,
+            ans:ans
+         })
+          await new_questData.save()
+
+      }
+      else if(quest_data.update===true)
+      {
+         await JavaQuestion.findByIdAndUpdate(quest_data._id,{
+            ansName:quest_data.ansName,
+            level:level,
+            question:question,
+            option1:option1,
+            option2:option2,
+            option3:option3,
+            ans:ans
+         })
+      }
+      else if(quest_data.delete===true)
+      {
+         await JavaQuestion.findByIdAndDelete(quest_data._id)
+      }
+   }
+
+
+    })
+    
 
 // javaRouter.post('/:id/',async(request,response)=>{
 //    const {id} = request.params

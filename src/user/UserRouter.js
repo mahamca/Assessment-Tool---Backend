@@ -2,7 +2,7 @@ import express from 'express'
 import { User,RefreshToken } from './userModel.js'
 import crypto from 'crypto'
 import jwt from 'jsonwebtoken'
-import { register } from 'module'
+
 
 const UserRouter =express.Router()
 
@@ -28,11 +28,15 @@ UserRouter.post('/create/', async (request, response) => {
 
         await new_user.save()
 
-        response.json("User Created")
+        response.json({
+            status:true,
+            message:"User Created"})
     }
 
     else {
-        response.json("User with the usename already exists!")
+        response.json({
+            status:false,
+            message:"User already exists!"})
     }
 })
 
@@ -44,7 +48,7 @@ UserRouter.post('/validate/', async (request, response) => {
 
     const user_check = all_user.find(user => user.username === username)
 
-    if (user_check === undefined) response.json({
+   if (user_check === undefined) response.json({
 
         status: false,
         message: "Invalid Username"
@@ -61,9 +65,11 @@ UserRouter.post('/validate/', async (request, response) => {
             const access_token = jwt.sign(user, process.env.ACCESS_TOKEN_KEY, {expiresIn: "30s"})
 
             const refresh_token = jwt.sign(user, process.env.REFRESH_TOKEN_KEY)
+            
 
             const new_refresh_token = new RefreshToken({
                 refresh_token: refresh_token
+                
             })
 
             await new_refresh_token.save()
