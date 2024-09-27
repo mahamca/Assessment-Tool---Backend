@@ -14,6 +14,10 @@ const javaModel=mongoose.Schema({
     des:{
         type:String,
         required:true
+    },
+    time:{
+        type:Number,
+        required:true
     }
     
 })

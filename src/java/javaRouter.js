@@ -70,14 +70,15 @@ response.json(single_data)
    {
       if(quest_data.new===true)
       {
+
          const new_questData=new JavaQuestion({
             ansName:quest_data.ansName,
-            level:level,
-            question:question,
-            option1:option1,
-            option2:option2,
-            option3:option3,
-            ans:ans
+            level:quest_data.level,
+            question:quest_data.question,
+            option1:quest_data.option1,
+            option2:quest_data.option2,
+            option3:quest_data.option3,
+            ans:quest_data.ans
          })
           await new_questData.save()
 
@@ -86,37 +87,40 @@ response.json(single_data)
       {
          await JavaQuestion.findByIdAndUpdate(quest_data._id,{
             ansName:quest_data.ansName,
-            level:level,
-            question:question,
-            option1:option1,
-            option2:option2,
-            option3:option3,
-            ans:ans
+            level:quest_data.level,
+            question:quest_data.question,
+            option1:quest_data.option1,
+            option2:quest_data.option2,
+            option3:quest_data.option3,
+            ans:quest_data.ans
          })
       }
       else if(quest_data.delete===true)
       {
          await JavaQuestion.findByIdAndDelete(quest_data._id)
       }
+      else if(quest_data.existing===false)
+      {
+         await JavaQuestion.findByIdAndDelete(quest_data._id)
+      }
+     
    }
-
+response.json("data saved")
 
     })
     
 
-// javaRouter.post('/:id/',async(request,response)=>{
-//    const {id} = request.params
-//    const ans=request.body[0]
-//    const data=await Java.findById(id)
-//    const  java_data = await JavaQuestion.find({ansName:data._id})
-//    let c=0
-// for(let i=0;i<java_data.length;i++)
-// {
-//    if(ans[i]===java_data[i])
-//       c++
-// }
-// response.json(c)
-// })
+    javaRouter.delete('/:id/', async(request,response)=>{
+        const {id} = request.params
+        const desc_data = await Java.findById(id)
+        const quest_data = await JavaQuestion.find({ansName : desc_data._id})
+        for(let x of quest_data)
+            {
+                await JavaQuestion.findByIdAndDelete(x._id)
+            }
+            await Java.findByIdAndDelete(id)
+            response.json("DELETED")
+    })
 
 
 
